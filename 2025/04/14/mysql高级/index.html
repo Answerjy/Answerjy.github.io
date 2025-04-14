@@ -1,0 +1,692 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no"><title>MySQL高级（一） | Answer</title><meta name="keywords" content="mysql"><meta name="author" content="Answer,answerjy@163.com"><meta name="copyright" content="Answer"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#f7f9fe"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-touch-fullscreen" content="yes"><meta name="apple-mobile-web-app-title" content="MySQL高级（一）"><meta name="application-name" content="MySQL高级（一）"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="#f7f9fe"><meta property="og:type" content="article"><meta property="og:title" content="MySQL高级（一）"><meta property="og:url" content="http://example.com/2025/04/14/mysql%E9%AB%98%E7%BA%A7/index.html"><meta property="og:site_name" content="Answer"><meta property="og:description" content="Mysql高级DQL查询语句反引号 		  模糊查询避免%出现在开头,会造成索引失效 order by排序先后	 		  表名列名都需要用${}，他们不能带’’  去重+统计数量	 	  null的运算	 分组函数会自动忽略null，不用对null进行处理  截取子串substr（字段，下标，截取长"><meta property="og:locale" content="zh-CN"><meta property="og:image" content="http://example.com/img/mysql.jpg"><meta property="article:author" content="Answer"><meta property="article:tag"><meta name="twitter:card" content="summary"><meta name="twitter:image" content="http://example.com/img/mysql.jpg"><meta name="description" content="Mysql高级DQL查询语句反引号 		  模糊查询避免%出现在开头,会造成索引失效 order by排序先后	 		  表名列名都需要用${}，他们不能带’’  去重+统计数量	 	  null的运算	 分组函数会自动忽略null，不用对null进行处理  截取子串substr（字段，下标，截取长"><link rel="shortcut icon" href="/img/tou.jpg"><link rel="canonical" href="http://example.com/2025/04/14/mysql%E9%AB%98%E7%BA%A7/"><link rel="preconnect" href="//cdn.cbd.int"/><meta name="google-site-verification" content="xxx"/><meta name="baidu-site-verification" content="code-xxx"/><meta name="msvalidate.01" content="xxx"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  linkPageTop: undefined,
+  peoplecanvas: {"enable":true,"img":"https://upload-bbs.miyoushe.com/upload/2024/07/27/125766904/ba62475f396df9de3316a08ed9e65d86_5680958632268053399..png"},
+  postHeadAiDescription: {"enable":true,"gptName":"AnZhiYu","mode":"local","switchBtn":false,"btnLink":"https://afdian.net/item/886a79d4db6711eda42a52540025c377","randomNum":3,"basicWordCount":1000,"key":"xxxx","Referer":"https://xx.xx/"},
+  diytitle: {"enable":true,"leaveTitle":"w(ﾟДﾟ)w 不要走！再看看嘛！","backTitle":"♪(^∇^*)欢迎肥来！"},
+  LA51: undefined,
+  greetingBox: {"enable":true,"default":"晚上好👋","list":[{"greeting":"晚安😴","startTime":0,"endTime":5},{"greeting":"早上好鸭👋, 祝你一天好心情！","startTime":6,"endTime":9},{"greeting":"上午好👋, 状态很好，鼓励一下～","startTime":10,"endTime":10},{"greeting":"11点多啦, 在坚持一下就吃饭啦～","startTime":11,"endTime":11},{"greeting":"午安👋, 宝贝","startTime":12,"endTime":14},{"greeting":"🌈充实的一天辛苦啦！","startTime":14,"endTime":18},{"greeting":"19点喽, 奖励一顿丰盛的大餐吧🍔。","startTime":19,"endTime":19},{"greeting":"晚上好👋, 在属于自己的时间好好放松😌~","startTime":20,"endTime":24}]},
+  twikooEnvId: 'https://answer-api-three.vercel.app/',
+  commentBarrageConfig:undefined,
+  music_page_default: "nav_music",
+  root: '/',
+  preloader: {"source":3},
+  friends_vue_info: undefined,
+  navMusic: true,
+  mainTone: undefined,
+  authorStatus: {"skills":["🤖️ 数码科技爱好者"]},
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":2,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"简","rightMenuMsgToTraditionalChinese":"转为繁体","rightMenuMsgToSimplifiedChinese":"转为简体"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":330},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    simplehomepage: true,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"copy":true,"copyrightEbable":false,"limitCount":50,"languages":{"author":"作者: Answer","link":"链接: ","source":"来源: Answer","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。","copySuccess":"复制成功，复制和转载请标注本文地址"}},
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#425AEF","bgDark":"#1f1f1f","position":"top-center"},
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.min.js',
+      css: 'https://cdn.cbd.int/flickr-justified-gallery@2.1.2/dist/fjGallery.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isAnchor: false,
+  shortcutKey: undefined,
+  autoDarkmode: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  configTitle: 'Answer',
+  title: 'MySQL高级（一）',
+  postAI: '',
+  pageFillDescription: 'Mysql高级, DQL查询语句, order by排序先后, 去重+统计数量, null的运算, 截取子串substr（字段下标截取长度）, trim去重字段空格, now(), 分组函数和分组查询group by, having和where区别和使用, 连接查询, 自连接, 外连接, 多表连接, 子查询（select嵌套）, DML增删改语句, 事务, 事务的特性, 事务的隔离级别, 三范式, 第二范式, 第三范式, 存储引擎, mysql体系结构, InnoDB存储引擎, 逻辑存储结构, MyISAM（MongoDB）, Memory（Redis）, 索引, B树, B树插入规则, B+树, B+树插入规则, Hash索引数据结构, 索引分类, 回表, 性能调优, 慢查询日志, explain 执行计划, 索引的使用, 最左前缀法则（联合索引）, 范围查询（联合索引）, 索引失效情况, SQL提示, 覆盖索引, 前缀索引, 单列和联合索引的选择, 索引设计原则高级查询语句反引号模糊查询避免出现在开头会造成索引失效排序先后表名列名都需要用他们不能带去重统计数量的运算分组函数会自动忽略不用对进行处理截取子串字段下标截取长度下标从开始去重字段空格分组函数和分组查询可以联合分组和区别和使用可以用分组函数但是必须先分组后再用过滤而不可以用分组函数必须先过滤后用分组效率比高因为执行顺序先后后连接查询笛卡尔积直接两张表没有和条件外键直接行查询效率慢执行顺序先后条件相等一般为外键非等值查询自连接外连接主次关系需要把员工名全查出来捎带查领导多表连接子查询嵌套中子查询增删改语句事务事务的本质就是多条语句同时成功或者同时失败每一句语句都会储存在日志文件中提交事务或者回滚事务都会清空日志文件提交到表中硬盘中回滚到上次提交都是结束事务的标志事务的特性事务的隔离级别重复同一事务中对相同数据进行多次读取不可重复读也就是事务先读取被别的事务修改了再读取同一条记录得到的结果不一样所以不可重复读每次读到的数据都一样可重复读会给读取的数据加锁其他事务无法修改这个数据幻读就是第一次读取发现不存在于是这个发现失败这时候就是另一个事务已经了这个但是第二次读取发现还是不存在依旧失败好像出现了幻觉单线程不能并发三范式第二范式修改前联合主键部分依赖修改后三张表关系表两个外键不能产生复合主键部分依赖就是某个字段只依赖其中一个主键和另一个主键没关系多对多关系需要设计三张表表表关系表多对多三张表关系表两外键第三范式修改前班级依赖依赖产生传递依赖修改后多的表加外键一对多两张表多的表加外键大部分情况下公司都不会遵循设计三范式为了满足客户需求速度要快的情况下哥们不需要节省空间有的是空间不怕数据冗余可以写在一张表内就不会出现笛卡尔积现象因为表与表连接次数越多效率越慢存储引擎是以表为单位的同一个数据库不同表可以有多种不同的存储引擎体系结构索引在引擎层存储引擎支持事务行级锁外键表结构数据索引全部都在表空间文件中之后表结构从逻辑存储结构只有一个表结构数据在硬盘中数据和索引都在内存中索引是一种优化后的数据结构优化都是根据索引来优化索引在引擎层实现树二叉树缺点顺序插入形成单向链表一个节点只能有两个子节点数据量大时层级较深检索速度慢对于第一个问题可以使用红黑树自平衡但是第二个问题不能解决树多路平衡查找树一个节点下可以有多个子节点解决第二个问题同样也是自平衡的度数树的度数指的是一个节点的子节点个数数据挂在下面树插入规则以阶树为例最多四个插入插入后中间的数向上分裂这里是树所有的元素都会出现在叶子节点中上面的非叶子节点起到索引的作用叶子节点是存放数据的形成单向链表树插入规则插入同样向上分裂但是叶子节点也会有出现指针形成单向链表索引对树做了优化叶子节点是双向链表每一个节点都是存储在页中的索引数据结构查询效率高不发生哈希冲突的情况不支持范围查询和排序为什么存储引擎使用树索引结构对于树和树来说每个节点都是存储在页中而的大小是固定为的所以对于树来说中存储数据的话会抢占和指针的空间和指针减少层级就会增多导致性能降低索引分类单列索引联合索引都是常规索引常规索引属于二级索引聚簇索引叶子节点保存了整行数据非聚簇索引叶子节点保存的是对应的主键如果有常规索引也会保存常规索引字段数据回表先查索引找到主键然后根据主键再找到对应的一整行数据性能调优主要对于索引来优化查询语句后七个看当前数据库是插入更新删除谁为主如果发现查询占主导就需要进行优化慢查询日志以上都是根据语句的执行时间来判断的性能我们不能只看执行时间执行计划多表查询相同表结构执行顺序从上往下先执行再执行连接表最后执行表子查询嵌套不同值越大越先执行先执行最内层的表一层层执行出去意义不大只说明当前的查询类型对于正常业务来说就是最好的了是不查表是查询系统表对主键和唯一索引查询一般是和对于非唯一性索引一般是虽然用了索引但也是对索引进行全表扫描是全表扫描显示可能用到的索引实际用到的索引返回条数和实际扫描条数占比越大越好索引的使用最左前缀法则联合索引针对于联合索引查询时从索引最左侧列必须存在开始不跳过索引中间的列如果跳过某一列这一列后面的索引将会失效创建联合索引按顺序联合是最左字段表示这个字段索引长度是表示索引长度是全表扫描索引失效因为没有最左字段缺少中间字段所以之后的索引部分失效只走了的索引和字段使用顺序无关只要出现就行范围查询联合索引针对于联合索引索引失效情况对索引列进行运算操作函数等字符串字段没有加头部模糊匹配索引失效前后字段都要有索引才会走索引不然失效数据分布影响有时候使用索引比全表扫描还慢就不会使用索引比如当我们要一个条件把全表都查出来或者表的绝大部分都是满足条件的肯定走全表扫描比走索引快因为绝大部分都不是不满足一般走索引因为绝大部分都不是满足一般不走索引所以要看表中数据绝大部分满不满足如果满足就不走如果不满足就走索引提示可以给一个字段添加多个索引比如联合索引和单列索引默认会执行联合索引前提满足最左前缀法则可以指定来使用哪个索引只是一个建议可能不会用是必须用覆盖索引返回的字段在索引列中都能找到而不需要回表查询这样的索引就是覆盖索引尽量避免测试对和加联合索引就不需要回表了前缀索引前缀索引中回表查询拿到这一行的数据不会直接返回而是会对比这条数据中前缀索引字段和语句的字段是否一致如果一致则返回结果如果不一致则顺着二级索引的链表继续查找下一个判断单列和联合索引的选择一个字段可以有多个索引比如自己的单列索引再加上和别人的联合索引会评估哪个字段的索引效率更高会选择改索引也就是索引此时在的单列索引中不包含字段所以会进行回表查询我们给和添加上联合索引后还是使用的的单列索引单列索引干扰还是会回表所以我们可以用提示来指定使用联合索引所以如果存在多个查询条件我们一般建立联合索引覆盖索引不会回表查询联合索引的数据结构索引设计原则',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-04-14 23:07:22',
+  postMainColor: '',
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#18171d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#f7f9fe')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+          const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+          const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+          const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+          if (t === undefined) {
+            if (isLightMode) activateLightMode()
+            else if (isDarkMode) activateDarkMode()
+            else if (isNotSpecified || hasNoSupport) {
+              const now = new Date()
+              const hour = now.getHours()
+              const isNight = hour <= 6 || hour >= 18
+              isNight ? activateDarkMode() : activateLightMode()
+            }
+            window.matchMedia('(prefers-color-scheme: dark)').addListener(e => {
+              if (saveToLocal.get('theme') === undefined) {
+                e.matches ? activateDarkMode() : activateLightMode()
+              }
+            })
+          } else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><meta name="generator" content="Hexo 7.3.0"></head><body data-type="anzhiyu"><div id="web_bg"></div><div id="an_music_bg"></div><div id="loading-box" onclick="document.getElementById(&quot;loading-box&quot;).classList.add(&quot;loaded&quot;)"><div class="loading-bg"><img class="loading-img nolazyload" alt="加载头像" src="/img/tou.jpg"/><div class="loading-image-dot"></div></div></div><script>const preloader = {
+  endLoading: () => {
+    document.getElementById('loading-box').classList.add("loaded");
+  },
+  initLoading: () => {
+    document.getElementById('loading-box').classList.remove("loaded")
+  }
+}
+window.addEventListener('load',()=> { preloader.endLoading() })
+setTimeout(function(){preloader.endLoading();},10000)
+
+if (true) {
+  document.addEventListener('pjax:send', () => { preloader.initLoading() })
+  document.addEventListener('pjax:complete', () => { preloader.endLoading() })
+}</script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.10/progress_bar/progress_bar.css"/><script async="async" src="https://cdn.cbd.int/pace-js@1.2.4/pace.min.js" data-pace-options="{ &quot;restartOnRequestAfter&quot;:false,&quot;eventLag&quot;:false}"></script><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><div id="nav-group"><span id="blog_name"><a id="site-name" href="/" accesskey="h"><div class="title">Answer</div><i class="anzhiyufont anzhiyu-icon-house-chimney"></i></a></span><div class="mask-name-container"><div id="name-container"><a id="page-name" href="javascript:anzhiyu.scrollToDest(0, 500)">PAGE_NAME</a></div></div><div id="menus"></div><div id="nav-right"><div class="nav-button" id="randomPost_button"><a class="site-page" onclick="toRandomPost()" title="随机前往一个文章" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-dice"></i></a></div><input id="center-console" type="checkbox"/><label class="widget" for="center-console" title="中控台" onclick="anzhiyu.switchConsole();"><i class="left"></i><i class="widget center"></i><i class="widget right"></i></label><div id="console"><div class="console-card-group-reward"><ul class="reward-all console-card"><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png" target="_blank"><img class="post-qr-code-img" alt="微信" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-weichat.png"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png" target="_blank"><img class="post-qr-code-img" alt="支付宝" src="https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/qrcode-alipay.png"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div><div class="console-card-group"><div class="console-card-group-left"></div><div class="console-card-group-right"><div class="console-card tags"><div class="card-content"><div class="author-content-item-tips">兴趣点</div><span class="author-content-item-title">寻找你感兴趣的领域</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/SSM/" style="font-size: 1.05rem;">SSM<sup>9</sup></a><a href="/tags/first-blog/" style="font-size: 1.05rem;">first blog<sup>1</sup></a><a href="/tags/java%E5%9F%BA%E7%A1%80/" style="font-size: 1.05rem;">java基础<sup>5</sup></a><a href="/tags/mysql/" style="font-size: 1.05rem;">mysql<sup>1</sup></a><a href="/tags/springboot/" style="font-size: 1.05rem;">springboot<sup>1</sup></a><a href="/tags/%E6%9D%82%E8%B0%88/" style="font-size: 1.05rem;">杂谈<sup>1</sup></a></div></div><hr/></div></div><div class="console-card history"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-box-archiv"></i><span>文章</span></div><div class="card-archives"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-archive"></i><span>归档</span></div><ul class="card-archive-list"><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/04/"><span class="card-archive-list-date">四月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">1</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/03/"><span class="card-archive-list-date">三月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">15</span><span>篇</span></div></a></li><li class="card-archive-list-item"><a class="card-archive-list-link" href="/archives/2025/02/"><span class="card-archive-list-date">二月 2025</span><div class="card-archive-list-count-group"><span class="card-archive-list-count">2</span><span>篇</span></div></a></li></ul></div><hr/></div></div></div><div class="button-group"><div class="console-btn-item"><a class="darkmode_switchbutton" title="显示模式切换" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-moon"></i></a></div><div class="console-btn-item" id="consoleHideAside" onclick="anzhiyu.hideAsideBtn()" title="边栏显示控制"><a class="asideSwitch"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></a></div><div class="console-btn-item" id="consoleMusic" onclick="anzhiyu.musicToggle()" title="音乐开关"><a class="music-switch"><i class="anzhiyufont anzhiyu-icon-music"></i></a></div></div><div class="console-mask" onclick="anzhiyu.hideConsole()" href="javascript:void(0);"></div></div><div class="nav-button" id="nav-totop"><a class="totopbtn" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i><span id="percent" onclick="anzhiyu.scrollToDest(0,500)">0</span></a></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);" title="切换"><i class="anzhiyufont anzhiyu-icon-bars"></i></a></div></div></div></nav><div id="post-info"><div id="post-firstinfo"><div class="meta-firstline"><a class="post-meta-original">原创</a><span class="article-meta tags"><a class="article-meta__tags" href="/tags/mysql/" tabindex="-1" itemprop="url"> <span> <i class="anzhiyufont anzhiyu-icon-hashtag"></i>mysql</span></a></span></div></div><h1 class="post-title" itemprop="name headline">MySQL高级（一）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="anzhiyufont anzhiyu-icon-calendar-days post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" itemprop="dateCreated datePublished" datetime="2025-04-14T15:04:50.000Z" title="发表于 2025-04-14 23:04:50">2025-04-14</time><span class="post-meta-separator"></span><i class="anzhiyufont anzhiyu-icon-history post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" itemprop="dateCreated datePublished" datetime="2025-04-14T15:07:22.634Z" title="更新于 2025-04-14 23:07:22">2025-04-14</time></span></div><div class="meta-secondline"><span class="post-meta-separator">       </span><span class="post-meta-position" title="作者IP属地为杭州"><i class="anzhiyufont anzhiyu-icon-location-dot"></i>杭州</span><span class="post-meta-separator"></span><span class="post-meta-commentcount"><i class="anzhiyufont anzhiyu-icon-comments post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2025/04/14/mysql%E9%AB%98%E7%BA%A7/#post-comment" tabindex="-1"><span id="twikoo-count"><i class="anzhiyufont anzhiyu-icon-spinner anzhiyu-spin"></i></span></a></span></div></div></div><section class="main-hero-waves-area waves-area"><svg class="waves-svg" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink" viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto"><defs><path id="gentle-wave" d="M -160 44 c 30 0 58 -18 88 -18 s 58 18 88 18 s 58 -18 88 -18 s 58 18 88 18 v 44 h -352 Z"></path></defs><g class="parallax"><use href="#gentle-wave" x="48" y="0"></use><use href="#gentle-wave" x="48" y="3"></use><use href="#gentle-wave" x="48" y="5"></use><use href="#gentle-wave" x="48" y="7"></use></g></svg></section><div id="post-top-cover"><img class="nolazyload" id="post-top-bg" src="/img/mysql.jpg"></div></header><main id="blog-container"><div class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container" itemscope itemtype="http://example.com/2025/04/14/mysql%E9%AB%98%E7%BA%A7/"><header><a href="/tags/mysql/" tabindex="-1" itemprop="url">mysql</a><h1 id="CrawlerTitle" itemprop="name headline">MySQL高级（一）</h1><span itemprop="author" itemscope itemtype="http://schema.org/Person">Answer</span><time itemprop="dateCreated datePublished" datetime="2025-04-14T15:04:50.000Z" title="发表于 2025-04-14 23:04:50">2025-04-14</time><time itemprop="dateCreated datePublished" datetime="2025-04-14T15:07:22.634Z" title="更新于 2025-04-14 23:07:22">2025-04-14</time></header><h1 id="Mysql高级"><a href="#Mysql高级" class="headerlink" title="Mysql高级"></a>Mysql高级</h1><h2 id="DQL查询语句"><a href="#DQL查询语句" class="headerlink" title="DQL查询语句"></a>DQL查询语句</h2><p>反引号</p>
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142247362.png" alt="image-20250414074629964" style="zoom:67%;" />		
+
+<p>模糊查询避免%出现在开头,会造成<strong>索引失效</strong></p>
+<h3 id="order-by排序先后"><a href="#order-by排序先后" class="headerlink" title="order by排序先后"></a>order by排序先后</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142248063.png" alt="image-20250413110219322">	</p>
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142248824.png" alt="image-20250414072444951" style="zoom:67%;" />		
+
+<p><strong>表名列名都需要用${}，他们不能带’’</strong></p>
+<hr>
+<h3 id="去重-统计数量"><a href="#去重-统计数量" class="headerlink" title="去重+统计数量"></a>去重+统计数量</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142249000.png" alt="image-20250413110318319">	</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142249084.png" alt="image-20250414072123779">	</p>
+<hr>
+<h3 id="null的运算"><a href="#null的运算" class="headerlink" title="null的运算"></a>null的运算</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142249589.png" alt="image-20250413110601023">	</p>
+<p><strong>分组函数会自动忽略null，不用对null进行处理</strong></p>
+<hr>
+<h3 id="截取子串substr（字段，下标，截取长度）"><a href="#截取子串substr（字段，下标，截取长度）" class="headerlink" title="截取子串substr（字段，下标，截取长度）"></a>截取子串substr（字段，下标，截取长度）</h3><p><strong>下标从1开始</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142250449.png" alt="image-20250413110900025">	</p>
+<hr>
+<h3 id="trim去重字段空格"><a href="#trim去重字段空格" class="headerlink" title="trim去重字段空格"></a>trim去重字段空格</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142250640.png" alt="image-20250413111007763">	</p>
+<hr>
+<h3 id="now"><a href="#now" class="headerlink" title="now()"></a>now()</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142250665.png" alt="image-20250413111315490">	</p>
+<hr>
+<h3 id="分组函数和分组查询group-by"><a href="#分组函数和分组查询group-by" class="headerlink" title="分组函数和分组查询group by"></a>分组函数和分组查询group by</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142250655.png" alt="image-20250413111907510">	</p>
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142250417.png" alt="image-20250413111852126" style="zoom:67%;" />	
+
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142250159.png" alt="image-20250413111923464">	</p>
+<p>可以联合分组</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142250143.png" alt="image-20250413111947966">	</p>
+<hr>
+<h3 id="having和where区别和使用"><a href="#having和where区别和使用" class="headerlink" title="having和where区别和使用"></a>having和where区别和使用</h3><p>having可以用分组函数，但是必须先group by 分组后再用having过滤</p>
+<p>而where不可以用分组函数，必须先过滤后用group by 分组</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142250670.png" alt="image-20250413112712140">	</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142250237.png" alt="image-20250413112542748">	</p>
+<p><strong>where效率比having高</strong></p>
+<p>因为执行顺序，先where后group by 后 having</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142250751.png" alt="image-20250413112940590">	<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142250277.png" alt="image-20250414071249539" style="zoom: 67%;" />	</p>
+<hr>
+<h3 id="连接查询"><a href="#连接查询" class="headerlink" title="连接查询"></a>连接查询</h3><p>笛卡尔积，直接from 两张表，没有join和on条件（外键），直接n*n行查询，效率慢</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142250190.png" alt="image-20250414081954719">	</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142250158.png" alt="image-20250414070059519">	</p>
+<p>执行顺序先from后select</p>
+<p>on条件相等，一般为<strong>外键</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142250679.png" alt="image-20250414070157215">	</p>
+<p>非等值查询</p>
+<hr>
+<h3 id="自连接"><a href="#自连接" class="headerlink" title="自连接"></a>自连接</h3><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142250533.png" alt="image-20250414070336657" style="zoom:67%;" />	
+
+<h3 id="外连接"><a href="#外连接" class="headerlink" title="外连接"></a>外连接</h3><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142251539.png" alt="image-20250414070450763" style="zoom:67%;" />	
+
+<p>主次关系，需要把员工名全查出来，捎带查领导</p>
+<hr>
+<h3 id="多表连接"><a href="#多表连接" class="headerlink" title="多表连接"></a>多表连接</h3><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142251771.png" alt="image-20250414070616777" style="zoom:67%;" />	
+
+<hr>
+<h3 id="子查询（select嵌套）"><a href="#子查询（select嵌套）" class="headerlink" title="子查询（select嵌套）"></a>子查询（select嵌套）</h3><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142251266.png" alt="image-20250414072237104" style="zoom:67%;" />	
+
+<p>where中子查询</p>
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142251400.png" alt="image-20250414072251865" style="zoom:67%;" />	
+
+<hr>
+<h2 id="DML增删改语句"><a href="#DML增删改语句" class="headerlink" title="DML增删改语句"></a>DML增删改语句</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142251217.png" alt="image-20250414073053523">	</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142251059.png" alt="image-20250414073108558">	</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142251007.png" alt="image-20250414073143004">	</p>
+<hr>
+<h2 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h2><p>事务的本质就是多条DML语句同时成功或者同时失败</p>
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142251760.png" alt="image-20250414075348118" style="zoom:67%;" />	
+
+<p>每一句DML语句都会储存在<strong>日志文件</strong>中<br>提交事务commit或者回滚事务rollback,都会<strong>清空日志文件</strong><br>commit提交到表中(硬盘中),rollback回滚到上次提交,都是结束事务的标志</p>
+<h3 id="事务的特性"><a href="#事务的特性" class="headerlink" title="事务的特性"></a>事务的特性</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142251105.png" alt="image-20250414160539197">	</p>
+<hr>
+<h3 id="事务的隔离级别"><a href="#事务的隔离级别" class="headerlink" title="事务的隔离级别"></a>事务的隔离级别</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142251466.png" alt="image-20250414075901639">	</p>
+<p>重复：同一事务中，对相同数据进行多次读取</p>
+<p><strong>不可重复读</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142251591.png" alt="image-20250414075928139">	</p>
+<p>也就是事务先读取a，被别的事务修改了，再读取同一条记录，得到的结果不一样，所以<strong>不可重复读</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142251114.png" alt="image-20250414080052064">	</p>
+<p>每次读到的数据都一样，可重复读<strong>会给读取的数据加锁</strong>，其他事务无法修改这个数据</p>
+<p>幻读就是第一次读取a，发现不存在，于是insert 这个a，发现insert失败，这时候就是另一个事务已经insert了这个a</p>
+<p>但是第二次读取a，发现还是不存在，依旧insert失败，好像出现了幻觉</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142251794.png" alt="image-20250414080747798">	</p>
+<p><strong>单线程不能并发</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142252748.png" alt="image-20250414160641872">	</p>
+<hr>
+<h2 id="三范式"><a href="#三范式" class="headerlink" title="三范式"></a>三范式</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142252378.png" alt="image-20250414080936943">	</p>
+<h3 id="第二范式"><a href="#第二范式" class="headerlink" title="第二范式"></a>第二范式</h3><p>修改前（联合主键，部分依赖）</p>
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142252834.png" alt="image-20250414081242181" style="zoom:67%;" />	
+
+<p>修改后，三张表，关系表两个外键</p>
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142252018.png" alt="image-20250414081227757" style="zoom:67%;" />	
+
+<p>不能产生复合主键，部分依赖就是某个字段只依赖其中一个主键，和另一个主键没关系</p>
+<p><strong>多对多关系</strong>，需要设计三张表A表，B表，关系表</p>
+<p><strong>多对多,三张表,关系表两外键</strong></p>
+<hr>
+<h3 id="第三范式"><a href="#第三范式" class="headerlink" title="第三范式"></a>第三范式</h3><p>修改前（班级依赖01,01依赖1001）产生传递依赖</p>
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142253736.png" alt="image-20250414081450268" style="zoom:67%;" />	
+
+<p>修改后（多的表加外键）</p>
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142253367.png" alt="image-20250414081522999" style="zoom:67%;" />	
+
+<p><strong>一对多,两张表,多的表加外键</strong></p>
+<hr>
+<p><strong>大部分情况下，公司都不会遵循设计三范式</strong></p>
+<p>为了满足客户需求,速度要快的情况下,哥们不需要节省空间,有的是空间,不怕数据冗余<br>可以写在一张表内,就不会出现笛卡尔积现象</p>
+<p><strong>因为表与表连接次数越多，效率越慢</strong></p>
+<hr>
+<h2 id="存储引擎"><a href="#存储引擎" class="headerlink" title="存储引擎"></a>存储引擎</h2><p>是<strong>以表为单位</strong>的，同一个数据库不同表可以有多种不同的存储引擎</p>
+<h3 id="mysql体系结构"><a href="#mysql体系结构" class="headerlink" title="mysql体系结构"></a>mysql体系结构</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142253998.png" alt="image-20250414160916253">	</p>
+<p>索引在引擎层</p>
+<hr>
+<h3 id="InnoDB存储引擎"><a href="#InnoDB存储引擎" class="headerlink" title="InnoDB存储引擎"></a>InnoDB存储引擎</h3><p>支持<strong>事务，行级锁，外键</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142253819.png" alt="image-20250414161054582">	</p>
+<p>表结构，数据，索引<strong>全部</strong>都在表空间文件.ibd中</p>
+<p>8.0之后表结构从.frm—–&gt;.sdi</p>
+<h4 id="逻辑存储结构"><a href="#逻辑存储结构" class="headerlink" title="逻辑存储结构"></a>逻辑存储结构</h4><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142253307.png" alt="image-20250414161500104">	</p>
+<hr>
+<h3 id="MyISAM（MongoDB）"><a href="#MyISAM（MongoDB）" class="headerlink" title="MyISAM（MongoDB）"></a>MyISAM（MongoDB）</h3><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142253628.png" alt="image-20250414161612644" style="zoom:67%;" />	
+
+<hr>
+<h3 id="Memory（Redis）"><a href="#Memory（Redis）" class="headerlink" title="Memory（Redis）"></a>Memory（Redis）</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142253415.png" alt="image-20250414161658027">	</p>
+<p>只有一个.sdi表结构数据在硬盘中，数据和索引都在内存中</p>
+<hr>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142253372.png" alt="image-20250414161830120">	</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142253350.png" alt="image-20250414162036597">	</p>
+<hr>
+<h2 id="索引"><a href="#索引" class="headerlink" title="索引"></a>索引</h2><p>是一种优化后的B+ Tree数据结构</p>
+<p>SQL优化都是根据索引来优化</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142253376.png" alt="image-20250414162335081"></p>
+<p>索引在引擎层实现</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142253472.png" alt="image-20250414162738550">	</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142254150.png" alt="image-20250414162815315">	</p>
+<hr>
+<h3 id="B树"><a href="#B树" class="headerlink" title="B树"></a>B树</h3><p><strong>二叉树</strong></p>
+<p>缺点：1.顺序插入形成单向链表</p>
+<p>2.一个节点只能有两个子节点，数据量大时，层级较深，检索速度慢</p>
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142254915.png" alt="image-20250414163030688" style="zoom: 50%;" />		
+
+<p>对于第一个问题，可以使用红黑树，自平衡，但是第二个问题不能解决</p>
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142254573.png" alt="image-20250414163121743" style="zoom:50%;" />	
+
+<hr>
+<p>B树（多路平衡查找树）（一个节点下可以有多个子节点，解决第二个问题），同样也是自平衡的</p>
+<p>度数：树的度数指的是一个节点的<strong>子节点个数</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142254597.png" alt="image-20250414163429985">	</p>
+<p><strong>数据挂在key下面</strong></p>
+<h4 id="B树插入规则"><a href="#B树插入规则" class="headerlink" title="B树插入规则"></a>B树插入规则</h4><p>以5阶B树为例，最多四个key</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142254723.png" alt="image-20250414163633579">	插入1200</p>
+<p>插入后<strong>中间的数向上分裂</strong>（这里是345）</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142254441.png" alt="image-20250414163744566">	</p>
+<hr>
+<h3 id="B-树"><a href="#B-树" class="headerlink" title="B+树"></a>B+树</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142254941.png" alt="image-20250414164309307">	</p>
+<p>所有的元素都会出现在叶子节点中，上面的非叶子节点起到索引的作用，叶子节点是存放数据的</p>
+<p>形成单向链表</p>
+<h4 id="B-树插入规则"><a href="#B-树插入规则" class="headerlink" title="B+树插入规则"></a>B+树插入规则</h4><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142254481.png" alt="image-20250414164350794">	插入890</p>
+<p>同样，567向上分裂，但是叶子节点也会有567，出现指针，形成单向链表</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142254226.png" alt="image-20250414164415634">	</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142254555.png" alt="image-20250414164516090">	</p>
+<p>Mysql索引对B+树做了优化</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142254016.png" alt="image-20250414164606419">	</p>
+<p>叶子节点是双向链表，每一个节点都是存储在页中的</p>
+<hr>
+<h3 id="Hash索引数据结构"><a href="#Hash索引数据结构" class="headerlink" title="Hash索引数据结构"></a>Hash索引数据结构</h3><p>查询效率高（不发生哈希冲突的情况）</p>
+<p>不支持范围查询和排序</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142254009.png" alt="image-20250414165122708">	</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142254156.png" alt="image-20250414190913523">	</p>
+<p>为什么InnoDB存储引擎使用B+树索引结构</p>
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142254423.png" alt="image-20250414191152900" style="zoom:67%;" />	
+
+<p>对于B树和B+树来说，每个节点都是存储在页page中，而page的大小是固定为16k的，所以对于B树来说，page中存储数据的话，会抢占key和指针的空间</p>
+<p>key和指针减少，层级就会增多，导致性能降低</p>
+<hr>
+<h3 id="索引分类"><a href="#索引分类" class="headerlink" title="索引分类"></a>索引分类</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142254273.png" alt="image-20250414191615443"></p>
+<p>单列索引，联合索引都是常规索引</p>
+<p><strong>常规索引属于二级索引</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142254411.png" alt="image-20250414191641603">	</p>
+<p>聚簇索引，叶子节点保存了整行数据</p>
+<p>非聚簇索引，叶子节点保存的是对应的主键id，<strong>如果有常规索引，也会保存常规索引字段数据</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142254136.png" alt="image-20250414191826300">	</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142255011.png" alt="image-20250414191943348">	</p>
+<h4 id="回表"><a href="#回表" class="headerlink" title="回表"></a>回表</h4><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142255081.png" alt="image-20250414192027477">	</p>
+<p>先查arm 索引找到主键id，然后根据主键id再找到对应的一整行数据</p>
+<hr>
+<h2 id="性能调优"><a href="#性能调优" class="headerlink" title="性能调优"></a>性能调优</h2><p>主要对于索引来优化查询语句</p>
+<p>com后七个_</p>
+<p>​	<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142255030.png" alt="image-20250414193158497" style="zoom: 80%;" />	</p>
+<p>看当前数据库是插入，更新，删除，谁为主</p>
+<p>如果发现查询占主导，就需要进行sql优化</p>
+<hr>
+<h3 id="慢查询日志"><a href="#慢查询日志" class="headerlink" title="慢查询日志"></a>慢查询日志</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142255678.png" alt="image-20250414193403261">	</p>
+<hr>
+<p>以上都是根据sql语句的执行时间来判断sql的性能，我们不能只看执行时间</p>
+<h3 id="explain-执行计划"><a href="#explain-执行计划" class="headerlink" title="explain 执行计划"></a>explain 执行计划</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142255416.png" alt="image-20250414194219497">	</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142255300.png" alt="image-20250414194150498">	</p>
+<p><strong>多表查询</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142255149.png" alt="image-20250414195347392">	</p>
+<p>id相同，表结构执行顺序从上往下，先执行student，再执行连接表，最后执行course表</p>
+<p><strong>子查询（select嵌套）</strong></p>
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142255609.png" alt="image-20250414195507317" style="zoom: 200%;" />		
+
+<p>id不同，值越大越先执行，先执行最内层的表，一层层执行出去</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142255695.png" alt="image-20250414195831614">	</p>
+<hr>
+<p>select_type意义不大，只说明当前sql的查询类型</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142255208.png" alt="image-20250414195845929">	</p>
+<hr>
+<p><strong>type</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142255452.png" alt="image-20250414195912123">	</p>
+<p>对于正常业务来说，const就是最好的了，NULL是不查表，system是查询系统表</p>
+<p>where对主键和唯一索引查询一般是const和eq_ref，对于非唯一性索引一般是ref</p>
+<p>index虽然用了索引，但也是对索引进行全表扫描，all是全表扫描</p>
+<hr>
+<p><strong>possible_key</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142255037.png" alt="image-20250414200456768">	</p>
+<p>显示可能用到的索引</p>
+<hr>
+<p><strong>key</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142255291.png" alt="image-20250414200520171">	</p>
+<p>实际用到的索引</p>
+<hr>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142255313.png" alt="image-20250414200550429">	</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142255095.png" alt="image-20250414200714215">	</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142255750.png" alt="image-20250414200652642">	</p>
+<p>返回条数和实际扫描条数占比，越大越好</p>
+<hr>
+<h2 id="索引的使用"><a href="#索引的使用" class="headerlink" title="索引的使用"></a>索引的使用</h2><h3 id="最左前缀法则（联合索引）"><a href="#最左前缀法则（联合索引）" class="headerlink" title="最左前缀法则（联合索引）"></a>最左前缀法则（联合索引）</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142255682.png" alt="image-20250414202126007">	</p>
+<p>针对于<strong>联合索引</strong>，查询时从索引<strong>最左侧列（必须存在）<strong>开始，不跳过索引中间的列，如果跳过某一列，这一列后面的索引将会</strong>失效</strong></p>
+<p>创建联合索引</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142255285.png" alt="image-20250414201453568">	</p>
+<p>profession，age，status，按顺序联合，<strong>profession是最左字段</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142255761.png" alt="image-20250414201719706">	</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142255278.png" alt="image-20250414201804934">	</p>
+<p>表示status这个字段索引长度是5</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142256375.png" alt="image-20250414201847022">	</p>
+<p>表示age索引长度是2</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142256530.png" alt="image-20250414201922127">	</p>
+<p>全表扫描，索引失效，因为<strong>没有最左字段</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142256058.png" alt="image-20250414202028660">	</p>
+<p>缺少中间字段，所以之后的索引部分失效，只走了profession的索引</p>
+<p><strong>和字段使用顺序无关，只要出现就行</strong></p>
+<hr>
+<h3 id="范围查询（联合索引）"><a href="#范围查询（联合索引）" class="headerlink" title="范围查询（联合索引）"></a>范围查询（联合索引）</h3><p>针对于联合索引</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142256298.png" alt="image-20250414202400785">	</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142256672.png" alt="image-20250414202351104">	</p>
+<hr>
+<h3 id="索引失效情况"><a href="#索引失效情况" class="headerlink" title="索引失效情况"></a>索引失效情况</h3><p>1.对索引列进行运算操作（函数substr等）</p>
+<img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142256885.png" alt="image-20250414202656377" style="zoom:67%;" />	
+
+<p>2.字符串字段没有加’’</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142256029.png" alt="image-20250414203002035">	</p>
+<p>3.头部模糊匹配，索引失效</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142256045.png" alt="image-20250414203153366">	</p>
+<p>4.or前后字段都要有索引才会走索引，不然失效</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142256793.png" alt="image-20250414203338526">	</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="C:/Users/Answer/AppData/Roaming/Typora/typora-user-images/image-20250414203400592.png" alt="image-20250414203400592">	</p>
+<p>5.数据分布影响</p>
+<p>有时候使用索引比全表扫描还慢，就不会使用索引</p>
+<p>比如：当我们要<strong>一个条件把全表都查出来</strong>（或者表的绝大部分都是满足条件的），肯定走全表扫描比走索引快</p>
+<p>is null （因为绝大部分都不是null，不满足）一般走索引</p>
+<p>is not null（因为绝大部分都不是null，满足）一般不走索引</p>
+<p><strong>所以null要看表中数据绝大部分满不满足，如果满足，就不走，如果不满足，就走索引</strong></p>
+<hr>
+<h3 id="SQL提示"><a href="#SQL提示" class="headerlink" title="SQL提示"></a>SQL提示</h3><p>可以给一个字段添加多个索引，比如联合索引和单列索引</p>
+<p>mysql默认会执行联合索引（前提满足最左前缀法则）</p>
+<p><strong>可以指定来使用哪个索引</strong></p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142256285.png" alt="image-20250414214958993">	</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142256164.png" alt="image-20250414215100979">	</p>
+<p>use index 只是一个建议，mysql可能不会用</p>
+<p>force index 是必须用</p>
+<hr>
+<h3 id="覆盖索引"><a href="#覆盖索引" class="headerlink" title="覆盖索引"></a>覆盖索引</h3><p>select返回的字段在索引列中都能找到，而<strong>不需要回表查询</strong>，这样的索引就是覆盖索引</p>
+<p>尽量避免select *</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142256922.png" alt="image-20250414220344250">	</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142256098.png" alt="image-20250414220524614">	</p>
+<p>测试</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142256011.png" alt="image-20250414220943814">	</p>
+<p>对username和password加联合索引，就不需要回表了</p>
+<hr>
+<h3 id="前缀索引"><a href="#前缀索引" class="headerlink" title="前缀索引"></a>前缀索引</h3><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142256658.png" alt="image-20250414221207765">	</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142256614.png" alt="image-20250414221856000">	</p>
+<p>前缀索引中，回表查询拿到row这一行的数据不会直接返回，而是会对比这条数据中前缀索引字段和select语句的字段是否一致，如果一致则返回结果，如果不一致，则顺着二级索引的链表继续查找下一个判断</p>
+<hr>
+<h3 id="单列和联合索引的选择"><a href="#单列和联合索引的选择" class="headerlink" title="单列和联合索引的选择"></a>单列和联合索引的选择</h3><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142256035.png" alt="image-20250414222146055" style="zoom:67%;" />	
+
+<p>一个字段可以有多个索引，比如自己的单列索引再加上和别人的联合索引</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142256332.png" alt="image-20250414222334732">	</p>
+<p>mysql会评估哪个字段的索引效率更高，会选择改索引，也就是phone索引</p>
+<p>此时在phone的单列索引中不包含name字段，所以会进行<strong>回表查询</strong></p>
+<hr>
+<p>我们给phone和name添加上联合索引后，还是使用的phone的单列索引（单列索引干扰），还是会回表</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="C:/Users/Answer/AppData/Roaming/Typora/typora-user-images/image-20250414222753040.png" alt="image-20250414222753040">	</p>
+<p>所以我们可以用sql提示（use index）来指定mysql使用联合索引</p>
+<p>所以，如果存在多个查询条件，我们一般建立联合索引（覆盖索引，不会回表查询）</p>
+<hr>
+<p>联合索引的数据结构</p>
+<p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://cdn.jsdelivr.net/gh/Answerjy/Cloud-image-Hosting/img/202504142256557.png" alt="image-20250414223704692">	</p>
+<hr>
+<h2 id="索引设计原则"><a href="#索引设计原则" class="headerlink" title="索引设计原则"></a>索引设计原则</h2><p><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="C:/Users/Answer/AppData/Roaming/Typora/typora-user-images/image-20250414223951399.png" alt="image-20250414223951399">	</p>
+</article><div class="post-copyright"><div class="copyright-cc-box"><i class="anzhiyufont anzhiyu-icon-copyright"></i></div><div class="post-copyright__author_box"><a class="post-copyright__author_img" href="/" title="头像"><img class="post-copyright__author_img_back" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/tou.jpg" title="头像" alt="头像"><img class="post-copyright__author_img_front" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/tou.jpg" title="头像" alt="头像"></a><div class="post-copyright__author_name">Answer</div><div class="post-copyright__author_desc">不用悬挂胡萝卜</div></div><div class="post-copyright__post__info"><a class="post-copyright__original" title="该文章为原创文章，注意版权协议" href="http://example.com/2025/04/14/mysql%E9%AB%98%E7%BA%A7/">原创</a><a class="post-copyright-title"><span onclick="rm.copyPageUrl('http://example.com/2025/04/14/mysql%E9%AB%98%E7%BA%A7/')">MySQL高级（一）</span></a></div><div class="post-tools" id="post-tools"><div class="post-tools-left"><div class="rewardLeftButton"></div><div class="shareRight"><div class="share-link mobile"><div class="share-qrcode"><div class="share-button" title="使用手机访问这篇文章"><i class="anzhiyufont anzhiyu-icon-qrcode"></i></div><div class="share-main"><div class="share-main-all"><div id="qrcode" title="http://example.com/2025/04/14/mysql%E9%AB%98%E7%BA%A7/"></div><div class="reward-dec">使用手机访问这篇文章</div></div></div></div></div><div class="share-link weibo"><a class="share-button" target="_blank" href="https://service.weibo.com/share/share.php?title=MySQL高级（一）&amp;url=http://example.com/2025/04/14/mysql%E9%AB%98%E7%BA%A7/&amp;pic=/img/mysql.jpg" rel="external nofollow noreferrer noopener"><i class="anzhiyufont anzhiyu-icon-weibo"></i></a></div><script>function copyCurrentPageUrl() {
+  var currentPageUrl = window.location.href;
+  var input = document.createElement("input");
+  input.setAttribute("value", currentPageUrl);
+  document.body.appendChild(input);
+  input.select();
+  input.setSelectionRange(0, 99999);
+  document.execCommand("copy");
+  document.body.removeChild(input);
+}</script><div class="share-link copyurl"><div class="share-button" id="post-share-url" title="复制链接" onclick="copyCurrentPageUrl()"><i class="anzhiyufont anzhiyu-icon-link"></i></div></div></div></div></div><div class="post-copyright__notice"><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Answer</a>！</span></div></div><div class="post-tools-right"><div class="tag_share"><div class="post-meta__box"><div class="post-meta__box__tag-list"><a class="post-meta__box__tags" href="/tags/mysql/"><span class="tags-punctuation"> <i class="anzhiyufont anzhiyu-icon-tag"></i></span>mysql<span class="tagsPageCount">1</span></a></div></div></div><div class="post_share"><div class="social-share" data-image="/img/mysql.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"/><script src="https://cdn.cbd.int/butterfly-extsrc@1.1.3/sharejs/dist/js/social-share.min.js" defer="defer"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-full"><a href="/2025/03/27/springboot%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/"><img class="prev-cover" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/springboot.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">SpringBoot快速入门</div></div></a></div></nav><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="anzhiyufont anzhiyu-icon-comments"></i><span> 评论</span></div><div class="comment-randomInfo"><a onclick="anzhiyu.addRandomCommentInfo()" href="javascript:void(0)">匿名评论</a><a href="/privacy" style="margin-left: 4px">隐私政策</a></div><div class="comment-tips" id="comment-tips"><span>✅ 你无需删除空行，直接评论以获取最佳展示效果</span></div></div><div class="comment-wrap"><div><div id="twikoo-wrap"></div></div></div></div><div class="comment-barrage"></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-content"><div class="author-info__sayhi" id="author-info__sayhi" onclick="anzhiyu.changeSayHelloText()"></div><div class="author-info-avatar"><img class="avatar-img" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/tou.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-status"><img class="g-status" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://bu.dusays.com/2023/08/24/64e6ce9c507bb.png" alt="status"/></div></div><div class="author-info__description"></div><div class="author-info__bottom-group"><a class="author-info__bottom-group-left" href="/"><h1 class="author-info__name">Answer</h1><div class="author-info__desc">不用悬挂胡萝卜</div></a><div class="card-info-social-icons is-center"><a class="social-icon faa-parent animated-hover" href="https://github.com/Answerjy" target="_blank" title="Github"><i class="anzhiyufont anzhiyu-icon-github"></i></a></div></div></div></div><div class="card-widget anzhiyu-right-widget" id="card-wechat" onclick="null"><div id="flip-wrapper"><div id="flip-content"><div class="face" style="background: url(https://bu.dusays.com/2023/01/13/63c02edf44033.png) center center / 100% no-repeat"></div><div class="back face" style="background: url(https://bu.dusays.com/2023/05/13/645fa415e8694.png) center center / 100% no-repeat"></div></div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-bars"></i><span>文章目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Mysql%E9%AB%98%E7%BA%A7"><span class="toc-number">1.</span> <span class="toc-text">Mysql高级</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#DQL%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5"><span class="toc-number">1.1.</span> <span class="toc-text">DQL查询语句</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#order-by%E6%8E%92%E5%BA%8F%E5%85%88%E5%90%8E"><span class="toc-number">1.1.1.</span> <span class="toc-text">order by排序先后</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8E%BB%E9%87%8D-%E7%BB%9F%E8%AE%A1%E6%95%B0%E9%87%8F"><span class="toc-number">1.1.2.</span> <span class="toc-text">去重+统计数量</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#null%E7%9A%84%E8%BF%90%E7%AE%97"><span class="toc-number">1.1.3.</span> <span class="toc-text">null的运算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%88%AA%E5%8F%96%E5%AD%90%E4%B8%B2substr%EF%BC%88%E5%AD%97%E6%AE%B5%EF%BC%8C%E4%B8%8B%E6%A0%87%EF%BC%8C%E6%88%AA%E5%8F%96%E9%95%BF%E5%BA%A6%EF%BC%89"><span class="toc-number">1.1.4.</span> <span class="toc-text">截取子串substr（字段，下标，截取长度）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#trim%E5%8E%BB%E9%87%8D%E5%AD%97%E6%AE%B5%E7%A9%BA%E6%A0%BC"><span class="toc-number">1.1.5.</span> <span class="toc-text">trim去重字段空格</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#now"><span class="toc-number">1.1.6.</span> <span class="toc-text">now()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E7%BB%84%E5%87%BD%E6%95%B0%E5%92%8C%E5%88%86%E7%BB%84%E6%9F%A5%E8%AF%A2group-by"><span class="toc-number">1.1.7.</span> <span class="toc-text">分组函数和分组查询group by</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#having%E5%92%8Cwhere%E5%8C%BA%E5%88%AB%E5%92%8C%E4%BD%BF%E7%94%A8"><span class="toc-number">1.1.8.</span> <span class="toc-text">having和where区别和使用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2"><span class="toc-number">1.1.9.</span> <span class="toc-text">连接查询</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.1.10.</span> <span class="toc-text">自连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%96%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.1.11.</span> <span class="toc-text">外连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E8%A1%A8%E8%BF%9E%E6%8E%A5"><span class="toc-number">1.1.12.</span> <span class="toc-text">多表连接</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%90%E6%9F%A5%E8%AF%A2%EF%BC%88select%E5%B5%8C%E5%A5%97%EF%BC%89"><span class="toc-number">1.1.13.</span> <span class="toc-text">子查询（select嵌套）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#DML%E5%A2%9E%E5%88%A0%E6%94%B9%E8%AF%AD%E5%8F%A5"><span class="toc-number">1.2.</span> <span class="toc-text">DML增删改语句</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1"><span class="toc-number">1.3.</span> <span class="toc-text">事务</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%E7%9A%84%E7%89%B9%E6%80%A7"><span class="toc-number">1.3.1.</span> <span class="toc-text">事务的特性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8B%E5%8A%A1%E7%9A%84%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="toc-number">1.3.2.</span> <span class="toc-text">事务的隔离级别</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E8%8C%83%E5%BC%8F"><span class="toc-number">1.4.</span> <span class="toc-text">三范式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E8%8C%83%E5%BC%8F"><span class="toc-number">1.4.1.</span> <span class="toc-text">第二范式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E8%8C%83%E5%BC%8F"><span class="toc-number">1.4.2.</span> <span class="toc-text">第三范式</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E"><span class="toc-number">1.5.</span> <span class="toc-text">存储引擎</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#mysql%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84"><span class="toc-number">1.5.1.</span> <span class="toc-text">mysql体系结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#InnoDB%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E"><span class="toc-number">1.5.2.</span> <span class="toc-text">InnoDB存储引擎</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%BB%E8%BE%91%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84"><span class="toc-number">1.5.2.1.</span> <span class="toc-text">逻辑存储结构</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MyISAM%EF%BC%88MongoDB%EF%BC%89"><span class="toc-number">1.5.3.</span> <span class="toc-text">MyISAM（MongoDB）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Memory%EF%BC%88Redis%EF%BC%89"><span class="toc-number">1.5.4.</span> <span class="toc-text">Memory（Redis）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95"><span class="toc-number">1.6.</span> <span class="toc-text">索引</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#B%E6%A0%91"><span class="toc-number">1.6.1.</span> <span class="toc-text">B树</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#B%E6%A0%91%E6%8F%92%E5%85%A5%E8%A7%84%E5%88%99"><span class="toc-number">1.6.1.1.</span> <span class="toc-text">B树插入规则</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#B-%E6%A0%91"><span class="toc-number">1.6.2.</span> <span class="toc-text">B+树</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#B-%E6%A0%91%E6%8F%92%E5%85%A5%E8%A7%84%E5%88%99"><span class="toc-number">1.6.2.1.</span> <span class="toc-text">B+树插入规则</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hash%E7%B4%A2%E5%BC%95%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="toc-number">1.6.3.</span> <span class="toc-text">Hash索引数据结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E5%88%86%E7%B1%BB"><span class="toc-number">1.6.4.</span> <span class="toc-text">索引分类</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%9B%9E%E8%A1%A8"><span class="toc-number">1.6.4.1.</span> <span class="toc-text">回表</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%A7%E8%83%BD%E8%B0%83%E4%BC%98"><span class="toc-number">1.7.</span> <span class="toc-text">性能调优</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%85%A2%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97"><span class="toc-number">1.7.1.</span> <span class="toc-text">慢查询日志</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#explain-%E6%89%A7%E8%A1%8C%E8%AE%A1%E5%88%92"><span class="toc-number">1.7.2.</span> <span class="toc-text">explain 执行计划</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">1.8.</span> <span class="toc-text">索引的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%80%E5%B7%A6%E5%89%8D%E7%BC%80%E6%B3%95%E5%88%99%EF%BC%88%E8%81%94%E5%90%88%E7%B4%A2%E5%BC%95%EF%BC%89"><span class="toc-number">1.8.1.</span> <span class="toc-text">最左前缀法则（联合索引）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8C%83%E5%9B%B4%E6%9F%A5%E8%AF%A2%EF%BC%88%E8%81%94%E5%90%88%E7%B4%A2%E5%BC%95%EF%BC%89"><span class="toc-number">1.8.2.</span> <span class="toc-text">范围查询（联合索引）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88%E6%83%85%E5%86%B5"><span class="toc-number">1.8.3.</span> <span class="toc-text">索引失效情况</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SQL%E6%8F%90%E7%A4%BA"><span class="toc-number">1.8.4.</span> <span class="toc-text">SQL提示</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%95"><span class="toc-number">1.8.5.</span> <span class="toc-text">覆盖索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%89%8D%E7%BC%80%E7%B4%A2%E5%BC%95"><span class="toc-number">1.8.6.</span> <span class="toc-text">前缀索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%95%E5%88%97%E5%92%8C%E8%81%94%E5%90%88%E7%B4%A2%E5%BC%95%E7%9A%84%E9%80%89%E6%8B%A9"><span class="toc-number">1.8.7.</span> <span class="toc-text">单列和联合索引的选择</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%B4%A2%E5%BC%95%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99"><span class="toc-number">1.9.</span> <span class="toc-text">索引设计原则</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="anzhiyufont anzhiyu-icon-history"></i><span>最近发布</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/04/14/mysql%E9%AB%98%E7%BA%A7/" title="MySQL高级（一）"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/mysql.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MySQL高级（一）"/></a><div class="content"><a class="title" href="/2025/04/14/mysql%E9%AB%98%E7%BA%A7/" title="MySQL高级（一）">MySQL高级（一）</a><time datetime="2025-04-14T15:04:50.000Z" title="发表于 2025-04-14 23:04:50">2025-04-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/27/springboot%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/" title="SpringBoot快速入门"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/springboot.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SpringBoot快速入门"/></a><div class="content"><a class="title" href="/2025/03/27/springboot%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/" title="SpringBoot快速入门">SpringBoot快速入门</a><time datetime="2025-03-27T03:28:50.000Z" title="发表于 2025-03-27 11:28:50">2025-03-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/20/SSM%E6%95%B4%E5%90%88/" title="SSM整合"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/ssm.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SSM整合"/></a><div class="content"><a class="title" href="/2025/03/20/SSM%E6%95%B4%E5%90%88/" title="SSM整合">SSM整合</a><time datetime="2025-03-20T14:53:04.000Z" title="发表于 2025-03-20 22:53:04">2025-03-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/19/SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8/" title="SpringMVC拦截器.异常处理.文件上传下载"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/springmvc.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SpringMVC拦截器.异常处理.文件上传下载"/></a><div class="content"><a class="title" href="/2025/03/19/SpringMVC%E6%8B%A6%E6%88%AA%E5%99%A8/" title="SpringMVC拦截器.异常处理.文件上传下载">SpringMVC拦截器.异常处理.文件上传下载</a><time datetime="2025-03-18T18:42:50.000Z" title="发表于 2025-03-19 02:42:50">2025-03-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/18/SpringMVC%E8%BF%9B%E9%98%B6/" title="SpringMVC进阶"><img src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/springmvc.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="SpringMVC进阶"/></a><div class="content"><a class="title" href="/2025/03/18/SpringMVC%E8%BF%9B%E9%98%B6/" title="SpringMVC进阶">SpringMVC进阶</a><time datetime="2025-03-18T07:27:50.000Z" title="发表于 2025-03-18 15:27:50">2025-03-18</time></div></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By Answer</div></div></footer></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="sidebar-site-data site-data is-center"><a href="/archives/" title="archive"><div class="headline">文章</div><div class="length-num">18</div></a><a href="/tags/" title="tag"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/" title="category"><div class="headline">分类</div><div class="length-num">0</div></a></div><span class="sidebar-menu-item-title">功能</span><div class="sidebar-menu-item"><a class="darkmode_switchbutton menu-child" href="javascript:void(0);" title="显示模式"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span>显示模式</span></a></div><div class="back-menu-list-groups"><div class="back-menu-list-group"><div class="back-menu-list-title">网页</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://blog.csdn.net/2302_79449634" title="CSDN博客"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/csdn.ico" alt="CSDN博客"/><span class="back-menu-item-text">CSDN博客</span></a><a class="back-menu-item" target="_blank" rel="noopener" href="https://github.com/Answerjy" title="GitHub"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="/img/github.ico" alt="GitHub"/><span class="back-menu-item-text">GitHub</span></a></div></div><div class="back-menu-list-group"><div class="back-menu-list-title">项目</div><div class="back-menu-list"><a class="back-menu-item" target="_blank" rel="noopener" href="https://image.anheyu.com/" title="安知鱼图床"><img class="back-menu-item-icon" src= "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onerror="this.onerror=null,this.src=&quot;/img/404.jpg&quot;" data-lazy-src="https://image.anheyu.com/favicon.ico" alt="安知鱼图床"/><span class="back-menu-item-text">安知鱼图床</span></a></div></div></div><span class="sidebar-menu-item-title">标签</span><div class="card-tags"><div class="item-headline"></div><div class="card-tag-cloud"><a href="/tags/SSM/" style="font-size: 0.88rem;">SSM<sup>9</sup></a><a href="/tags/first-blog/" style="font-size: 0.88rem;">first blog<sup>1</sup></a><a href="/tags/java%E5%9F%BA%E7%A1%80/" style="font-size: 0.88rem;">java基础<sup>5</sup></a><a href="/tags/mysql/" style="font-size: 0.88rem;">mysql<sup>1</sup></a><a href="/tags/springboot/" style="font-size: 0.88rem;">springboot<sup>1</sup></a><a href="/tags/%E6%9D%82%E8%B0%88/" style="font-size: 0.88rem;">杂谈<sup>1</sup></a></div></div><hr/></div></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="anzhiyufont anzhiyu-icon-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="anzhiyufont anzhiyu-icon-arrows-left-right"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="anzhiyufont anzhiyu-icon-gear"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="anzhiyufont anzhiyu-icon-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="anzhiyufont anzhiyu-icon-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></button></div></div><div id="nav-music"><a id="nav-music-hoverTips" onclick="anzhiyu.musicToggle()" accesskey="m">播放音乐</a><div id="console-music-bg"></div><meting-js id="8152976493" server="netease" type="playlist" mutex="true" preload="none" theme="var(--anzhiyu-main)" data-lrctype="0" order="random" volume="0.7"></meting-js></div><div id="rightMenu"><div class="rightMenu-group rightMenu-small"><div class="rightMenu-item" id="menu-backward"><i class="anzhiyufont anzhiyu-icon-arrow-left"></i></div><div class="rightMenu-item" id="menu-forward"><i class="anzhiyufont anzhiyu-icon-arrow-right"></i></div><div class="rightMenu-item" id="menu-refresh"><i class="anzhiyufont anzhiyu-icon-arrow-rotate-right" style="font-size: 1rem;"></i></div><div class="rightMenu-item" id="menu-top"><i class="anzhiyufont anzhiyu-icon-arrow-up"></i></div></div><div class="rightMenu-group rightMenu-line rightMenuPlugin"><div class="rightMenu-item" id="menu-copytext"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制选中文本</span></div><div class="rightMenu-item" id="menu-pastetext"><i class="anzhiyufont anzhiyu-icon-paste"></i><span>粘贴文本</span></div><a class="rightMenu-item" id="menu-commenttext"><i class="anzhiyufont anzhiyu-icon-comment-medical"></i><span>引用到评论</span></a><div class="rightMenu-item" id="menu-newwindow"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开</span></div><div class="rightMenu-item" id="menu-copylink"><i class="anzhiyufont anzhiyu-icon-link"></i><span>复制链接地址</span></div><div class="rightMenu-item" id="menu-copyimg"><i class="anzhiyufont anzhiyu-icon-images"></i><span>复制此图片</span></div><div class="rightMenu-item" id="menu-downloadimg"><i class="anzhiyufont anzhiyu-icon-download"></i><span>下载此图片</span></div><div class="rightMenu-item" id="menu-newwindowimg"><i class="anzhiyufont anzhiyu-icon-window-restore"></i><span>新窗口打开图片</span></div><div class="rightMenu-item" id="menu-search"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>站内搜索</span></div><div class="rightMenu-item" id="menu-searchBaidu"><i class="anzhiyufont anzhiyu-icon-magnifying-glass"></i><span>百度搜索</span></div><div class="rightMenu-item" id="menu-music-toggle"><i class="anzhiyufont anzhiyu-icon-play"></i><span>播放音乐</span></div><div class="rightMenu-item" id="menu-music-back"><i class="anzhiyufont anzhiyu-icon-backward"></i><span>切换到上一首</span></div><div class="rightMenu-item" id="menu-music-forward"><i class="anzhiyufont anzhiyu-icon-forward"></i><span>切换到下一首</span></div><div class="rightMenu-item" id="menu-music-playlist" onclick="window.open(&quot;https://y.qq.com/n/ryqq/playlist/8802438608&quot;, &quot;_blank&quot;);" style="display: none;"><i class="anzhiyufont anzhiyu-icon-radio"></i><span>查看所有歌曲</span></div><div class="rightMenu-item" id="menu-music-copyMusicName"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制歌名</span></div></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item menu-link" id="menu-randomPost"><i class="anzhiyufont anzhiyu-icon-shuffle"></i><span>随便逛逛</span></a><a class="rightMenu-item menu-link" href="/categories/"><i class="anzhiyufont anzhiyu-icon-cube"></i><span>博客分类</span></a><a class="rightMenu-item menu-link" href="/tags/"><i class="anzhiyufont anzhiyu-icon-tags"></i><span>文章标签</span></a></div><div class="rightMenu-group rightMenu-line rightMenuOther"><a class="rightMenu-item" id="menu-copy" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-copy"></i><span>复制地址</span></a><a class="rightMenu-item" id="menu-commentBarrage" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-message"></i><span class="menu-commentBarrage-text">关闭热评</span></a><a class="rightMenu-item" id="menu-darkmode" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-circle-half-stroke"></i><span class="menu-darkmode-text">深色模式</span></a><a class="rightMenu-item" id="menu-translate" href="javascript:void(0);"><i class="anzhiyufont anzhiyu-icon-language"></i><span>轉為繁體</span></a></div></div><div id="rightmenu-mask"></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.cbd.int/@fancyapps/ui@5.0.28/dist/fancybox/fancybox.umd.js"></script><script src="https://cdn.cbd.int/instant.page@5.2.0/instantpage.js" type="module"></script><script src="https://cdn.cbd.int/vanilla-lazyload@17.8.5/dist/lazyload.iife.min.js"></script><script src="https://cdn.cbd.int/node-snackbar@0.1.16/dist/snackbar.min.js"></script><canvas id="universe"></canvas><script async src="https://npm.elemecdn.com/anzhiyu-theme-static@1.0.0/dark/dark.js"></script><script>// 消除控制台打印
+var HoldLog = console.log;
+console.log = function () {};
+let now1 = new Date();
+queueMicrotask(() => {
+  const Log = function () {
+    HoldLog.apply(console, arguments);
+  }; //在恢复前输出日志
+  const grt = new Date("04/01/2023 00:00:00"); //此处修改你的建站时间或者网站上线时间
+  now1.setTime(now1.getTime() + 250);
+  const days = (now1 - grt) / 1000 / 60 / 60 / 24;
+  const dnum = Math.floor(days);
+  const ascll = [
+    `欢迎使用安知鱼!`,
+    `生活明朗, 万物可爱`,
+    `
+        
+       █████╗ ███╗   ██╗███████╗██╗  ██╗██╗██╗   ██╗██╗   ██╗
+      ██╔══██╗████╗  ██║╚══███╔╝██║  ██║██║╚██╗ ██╔╝██║   ██║
+      ███████║██╔██╗ ██║  ███╔╝ ███████║██║ ╚████╔╝ ██║   ██║
+      ██╔══██║██║╚██╗██║ ███╔╝  ██╔══██║██║  ╚██╔╝  ██║   ██║
+      ██║  ██║██║ ╚████║███████╗██║  ██║██║   ██║   ╚██████╔╝
+      ╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝╚═╝   ╚═╝    ╚═════╝
+        
+        `,
+    "已上线",
+    dnum,
+    "天",
+    "©2020 By 安知鱼 V1.6.14",
+  ];
+  const ascll2 = [`NCC2-036`, `调用前置摄像头拍照成功，识别为【小笨蛋】.`, `Photo captured: `, `🤪`];
+
+  setTimeout(
+    Log.bind(
+      console,
+      `\n%c${ascll[0]} %c ${ascll[1]} %c ${ascll[2]} %c${ascll[3]}%c ${ascll[4]}%c ${ascll[5]}\n\n%c ${ascll[6]}\n`,
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      "color:#425AEF",
+      "",
+      "color:#425AEF",
+      ""
+    )
+  );
+  setTimeout(
+    Log.bind(
+      console,
+      `%c ${ascll2[0]} %c ${ascll2[1]} %c \n${ascll2[2]} %c\n${ascll2[3]}\n`,
+      "color:white; background-color:#4fd953",
+      "",
+      "",
+      'background:url("https://npm.elemecdn.com/anzhiyu-blog@1.1.6/img/post/common/tinggge.gif") no-repeat;font-size:450%'
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c WELCOME %c 你好，小笨蛋.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(
+      console,
+      "%c ⚡ Powered by 安知鱼 %c 你正在访问 Answer 的博客.",
+      "color:white; background-color:#f0ad4e",
+      ""
+    )
+  );
+
+  setTimeout(Log.bind(console, "%c W23-12 %c 你已打开控制台.", "color:white; background-color:#4f90d9", ""));
+
+  setTimeout(
+    console.warn.bind(console, "%c S013-782 %c 你现在正处于监控中.", "color:white; background-color:#d9534f", "")
+  );
+});</script><script async src="/anzhiyu/random.js"></script><div class="js-pjax"><script>(() => {
+  const init = () => {
+    twikoo.init(Object.assign({
+      el: '#twikoo-wrap',
+      envId: 'https://answer-api-three.vercel.app/',
+      region: '',
+      onCommentLoaded: () => {
+        anzhiyu.loadLightbox(document.querySelectorAll('#twikoo .tk-content img:not(.tk-owo-emotion)'))
+      }
+    }, null))
+  }
+
+  const loadTwikoo = () => {
+    if (typeof twikoo === 'object') setTimeout(runFn,0)
+    else getScript('https://cdn.cbd.int/twikoo@1.6.39/dist/twikoo.all.min.js').then(runFn)
+  }
+
+  const getCount = () => {
+    const countELement = document.getElementById('twikoo-count')
+    if(!countELement) return
+    twikoo.getCommentsCount({
+      envId: 'https://answer-api-three.vercel.app/',
+      region: '',
+      urls: [window.location.pathname],
+      includeReply: false
+    }).then(res => {
+      countELement.textContent = res[0].count
+    }).catch(err => {
+      console.error(err)
+    })
+  }
+
+  const runFn = () => {
+    init();
+    GLOBAL_CONFIG_SITE.isPost && getCount()
+  }
+
+  if ('Twikoo' === 'Twikoo' || !false) {
+    if (false) anzhiyu.loadComment(document.getElementById('twikoo-wrap'), loadTwikoo)
+    else {
+      loadTwikoo()
+    }
+  } else {
+    window.loadOtherComment = loadTwikoo
+  }
+})()</script><input type="hidden" name="page-type" id="page-type" value="post"></div><script>var visitorMail = "";
+</script><script async data-pjax src="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/waterfall/waterfall.js"></script><script src="https://lf3-cdn-tos.bytecdntp.com/cdn/expire-1-M/qrcodejs/1.0.0/qrcode.min.js"></script><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.1.9/icon/ali_iconfont_css.css"><link rel="stylesheet" href="https://cdn.cbd.int/anzhiyu-theme-static@1.0.0/aplayer/APlayer.min.css" media="print" onload="this.media='all'"><script src="https://cdn.cbd.int/anzhiyu-blog-static@1.0.1/js/APlayer.min.js"></script><script src="https://cdn.cbd.int/hexo-anzhiyu-music@1.0.1/assets/js/Meting2.min.js"></script><script src="https://cdn.cbd.int/pjax@0.2.8/pjax.min.js"></script><script>let pjaxSelectors = ["meta[property=\"og:image\"]","meta[property=\"og:title\"]","meta[property=\"og:url\"]","meta[property=\"og:type\"]","meta[property=\"og:site_name\"]","meta[property=\"og:description\"]","head > title","#config-diff","#body-wrap","#rightside-config-hide","#rightside-config-show",".js-pjax"]
+var pjax = new Pjax({
+  elements: 'a:not([target="_blank"])',
+  selectors: pjaxSelectors,
+  cacheBust: false,
+  analytics: false,
+  scrollRestoration: false
+})
+
+document.addEventListener('pjax:send', function () {
+  // removeEventListener scroll 
+  anzhiyu.removeGlobalFnEvent('pjax')
+  anzhiyu.removeGlobalFnEvent('themeChange')
+
+  document.getElementById('rightside').classList.remove('rightside-show')
+  
+  if (window.aplayers) {
+    for (let i = 0; i < window.aplayers.length; i++) {
+      if (!window.aplayers[i].options.fixed) {
+        window.aplayers[i].destroy()
+      }
+    }
+  }
+
+  typeof typed === 'object' && typed.destroy()
+
+  //reset readmode
+  const $bodyClassList = document.body.classList
+  $bodyClassList.contains('read-mode') && $bodyClassList.remove('read-mode')
+})
+
+document.addEventListener('pjax:complete', function () {
+  window.refreshFn()
+
+  document.querySelectorAll('script[data-pjax]').forEach(item => {
+    const newScript = document.createElement('script')
+    const content = item.text || item.textContent || item.innerHTML || ""
+    Array.from(item.attributes).forEach(attr => newScript.setAttribute(attr.name, attr.value))
+    newScript.appendChild(document.createTextNode(content))
+    item.parentNode.replaceChild(newScript, item)
+  })
+
+  GLOBAL_CONFIG.islazyload && window.lazyLoadInstance.update()
+
+  typeof panguInit === 'function' && panguInit()
+
+  // google analytics
+  typeof gtag === 'function' && gtag('config', '', {'page_path': window.location.pathname});
+
+  // baidu analytics
+  typeof _hmt === 'object' && _hmt.push(['_trackPageview',window.location.pathname]);
+
+  typeof loadMeting === 'function' && document.getElementsByClassName('aplayer').length && loadMeting()
+
+  // prismjs
+  typeof Prism === 'object' && Prism.highlightAll()
+})
+
+document.addEventListener('pjax:error', e => {
+  if (e.request.status === 404) {
+    pjax.loadUrl('/404.html')
+  }
+})</script><script charset="UTF-8" src="https://cdn.cbd.int/anzhiyu-theme-static@1.1.5/accesskey/accesskey.js"></script></div><div id="popup-window"><div class="popup-window-title">通知</div><div class="popup-window-divider"></div><div class="popup-window-content"><div class="popup-tip">你好呀</div><div class="popup-link"><i class="anzhiyufont anzhiyu-icon-arrow-circle-right"></i></div></div></div></body></html>
